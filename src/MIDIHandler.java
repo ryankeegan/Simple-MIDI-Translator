@@ -1,4 +1,5 @@
 import javax.sound.midi.*;
+import java.util.List;
 
 public class MIDIHandler {
     MidiDevice fSourceDevice;  // Device that we will be translating from
@@ -9,11 +10,23 @@ public class MIDIHandler {
             // Set source device
             fSourceDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex()]);
             // Set target device
-            fTargetDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex()]);
+//            fTargetDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex()]);
         } catch(MidiUnavailableException e) {
             Console.error("FATAL: Failed to open MIDI device(s)");
             System.exit(-1);
         }
+
+        // Start receiving input from source device
+        try {
+            Transmitter sourceTransmitter = fSourceDevice.getTransmitter();
+            sourceTransmitter.setReceiver(new SourceReceiver(fSourceDevice.getDeviceInfo().toString()));
+            fSourceDevice.open();
+            Console.info("MIDI device opened successfully!");
+        } catch(MidiUnavailableException e) {
+            Console.error("FATAL: MIDI device(s) busy");
+        }
+
+        // Open receiver for target device
     }
 
     public int selectMIDIDeviceIndex() {
