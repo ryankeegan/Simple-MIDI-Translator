@@ -1,5 +1,5 @@
 # Simple-MIDI-Translator
-## Translate CC or PC instructions from your MIDI interface into alternate instructions
+## Summary
 This program enables the remapping of CC/PC instructions coming from one MIDI device and sends them to another. They can be sent to a virtual loop-back MIDI device so it behaves and appears like any other native MIDI device on your PC.
 
 While I have not tested this application on macOS or Linux, because it only uses native Java libraries there is no reason it shouldn't work.
