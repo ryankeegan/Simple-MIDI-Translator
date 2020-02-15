@@ -1,13 +1,37 @@
+/**
+ * Copyright (C) 2020  Ryan Keegan
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 import javax.sound.midi.*;
-import java.util.List;
 
+/**
+ * Sets up connections to the input and output MIDI devices
+ */
 public class MIDIHandler {
-    MidiDevice fSourceDevice;  // Device that we will be translating from
-    MidiDevice fTargetDevice;  // Device that we will be broadcasting to
-    MidiDevice.Info[] fDevicesInfo = MidiSystem.getMidiDeviceInfo();
-    static Receiver fTargetReceiver;
+    private MidiDevice fSourceDevice;  // Device that we will be translating from
+    private MidiDevice fTargetDevice;  // Device that we will be broadcasting to
+    private MidiDevice.Info[] fDevicesInfo = MidiSystem.getMidiDeviceInfo();
+    private static Receiver TARGET_RECEIVER;
 
-    public MIDIHandler() {
+    /**
+     * Open a pair of connections (an input MIDI device and an output to broadcast the translated MIDI
+     * instructions to)
+     */
+    MIDIHandler() {
         try {
             // Set source device
             fSourceDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex("input")]);
@@ -21,7 +45,7 @@ public class MIDIHandler {
         // Start receiving input from source device
         try {
             Transmitter sourceTransmitter = fSourceDevice.getTransmitter();
-            sourceTransmitter.setReceiver(new SourceReceiver(fSourceDevice.getDeviceInfo().toString()));
+            sourceTransmitter.setReceiver(new SourceReceiver());
             fSourceDevice.open();
             Console.info("Source MIDI device opened successfully!");
         } catch(MidiUnavailableException e) {
@@ -31,7 +55,7 @@ public class MIDIHandler {
 
         // Open receiver for target device
         try {
-            fTargetReceiver = fTargetDevice.getReceiver();
+            TARGET_RECEIVER = fTargetDevice.getReceiver();
             fTargetDevice.open();
             Console.info("Target MIDI device opened successfully!");
         } catch(MidiUnavailableException e) {
@@ -40,7 +64,15 @@ public class MIDIHandler {
         }
     }
 
-    public int selectMIDIDeviceIndex(String type) {
+    /**
+     * Used to list the available MIDI devices on the machine. Each listing contains the device name,
+     * description, and a corresponding index. The user selects the device by entering the corresponding
+     * index which is then returned.
+     * @param type  Used to change the prompt for user input to reflect what device they are selecting
+     *              (input or target)
+     * @return Integer representing the index the user selected
+     */
+    private int selectMIDIDeviceIndex(String type) {
         Console.banner();
 
         // List devices
@@ -69,7 +101,7 @@ public class MIDIHandler {
         return deviceIndex;
     }
 
-    public static Receiver getTargetReceiver() {
-        return fTargetReceiver;
+    static Receiver getTargetReceiver() {
+        return TARGET_RECEIVER;
     }
 }
