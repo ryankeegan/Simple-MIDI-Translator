@@ -5,12 +5,14 @@ public class MIDIHandler {
     MidiDevice fSourceDevice;  // Device that we will be translating from
     MidiDevice fTargetDevice;  // Device that we will be broadcasting to
     MidiDevice.Info[] fDevicesInfo = MidiSystem.getMidiDeviceInfo();
+    static Receiver fTargetReceiver;
+
     public MIDIHandler() {
         try {
             // Set source device
-            fSourceDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex()]);
+            fSourceDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex("input")]);
             // Set target device
-//            fTargetDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex()]);
+            fTargetDevice = MidiSystem.getMidiDevice(fDevicesInfo[selectMIDIDeviceIndex("output")]);
         } catch(MidiUnavailableException e) {
             Console.error("FATAL: Failed to open MIDI device(s)");
             System.exit(-1);
@@ -21,15 +23,22 @@ public class MIDIHandler {
             Transmitter sourceTransmitter = fSourceDevice.getTransmitter();
             sourceTransmitter.setReceiver(new SourceReceiver(fSourceDevice.getDeviceInfo().toString()));
             fSourceDevice.open();
-            Console.info("MIDI device opened successfully!");
+            Console.info("Source MIDI device opened successfully!");
         } catch(MidiUnavailableException e) {
-            Console.error("FATAL: MIDI device(s) busy");
+            Console.error("FATAL: Source MIDI device busy");
         }
 
         // Open receiver for target device
+        try {
+            fTargetReceiver = fTargetDevice.getReceiver();
+            fTargetDevice.open();
+            Console.info("Target MIDI device opened successfully!");
+        } catch(MidiUnavailableException e) {
+            Console.error("FATAL: Target MIDI device busy");
+        }
     }
 
-    public int selectMIDIDeviceIndex() {
+    public int selectMIDIDeviceIndex(String type) {
         Console.banner();
 
         // List devices
@@ -40,14 +49,14 @@ public class MIDIHandler {
             Console.banner();
         }
 
-        // User selects input device
+        // User selects device
         int deviceIndex = 0;
         boolean invalidInput = true;
         while(invalidInput) {
-            Console.message("Select input device:");
+            Console.message("Select " + type + " device:");
             try {
                 deviceIndex = Integer.parseInt(Console.getInput().nextLine());
-                if(deviceIndex < 0 || deviceIndex >= fDevicesInfo.length)
+                if(deviceIndex < 0 || deviceIndex >= fDevicesInfo.length)       // Ensure device is valid
                     throw new NumberFormatException();
                 invalidInput = false;
             } catch(NumberFormatException e) {
@@ -56,5 +65,9 @@ public class MIDIHandler {
         }
 
         return deviceIndex;
+    }
+
+    public static Receiver getTargetReceiver() {
+        return fTargetReceiver;
     }
 }
