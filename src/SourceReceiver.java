@@ -10,8 +10,6 @@ public class SourceReceiver implements Receiver {
 
     public void send(MidiMessage message, long timeStamp) {
         System.out.print("RECEIVED: ");
-        MIDITranslate.decodeMessage(message);
-
         MIDITranslate.sendToTarget(message, timeStamp);
     }
 

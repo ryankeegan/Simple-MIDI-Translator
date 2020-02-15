@@ -26,6 +26,7 @@ public class MIDIHandler {
             Console.info("Source MIDI device opened successfully!");
         } catch(MidiUnavailableException e) {
             Console.error("FATAL: Source MIDI device busy");
+            System.exit(-1);
         }
 
         // Open receiver for target device
@@ -35,6 +36,7 @@ public class MIDIHandler {
             Console.info("Target MIDI device opened successfully!");
         } catch(MidiUnavailableException e) {
             Console.error("FATAL: Target MIDI device busy");
+            System.exit(-1);
         }
     }
 
