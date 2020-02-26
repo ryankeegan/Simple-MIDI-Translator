@@ -11,6 +11,8 @@ To run the application either compile from source or download the binary from th
 
 `java -jar SimpleMIDITranslator.jar`
 
+Alternatively you can run one of the included script files. Run **start.bat** for Windows and **start.sh** for \*nix (note on \*nix you may need to grant the file execution privileges with `chmod +x start.sh`).
+
 Upon starting the application you will be prompted to select the incoming and outgoing MIDI devices that will be used.
 
 ## Configuring the Instruction Mappings
