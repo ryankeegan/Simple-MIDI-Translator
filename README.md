@@ -1,4 +1,15 @@
 # Simple-MIDI-Translator
+
+## Download Information
+
+**[Download the latest release](https://github.com/ryankeegan/Simple-MIDI-Translator/releases/download/1.0/Simple-MIDI-Translator-v1.0.zip)**
+
+The release includes an example config file intended to enable snapshot functionality in Helix Native when using the MIDI Commander interface. To modify the config for your specific use case see [Configuring the Instruction Mappings](https://github.com/ryankeegan/Simple-MIDI-Translator#configuring-the-instruction-mappings).
+
+Also ensure that you have a virtual loop-back MIDI device to send the translated instructions to. This device will be what you use for input in your DAW/plugin (not your physical device!) I use loopMIDI but really any virtual loop-back MIDI device should work.
+
+**[Download loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)**
+
 ## Summary
 This program enables the remapping of CC/PC instructions coming from one MIDI device and sends them to another. They can be sent to a virtual loop-back MIDI device so it behaves and appears like any other native MIDI device on your PC.
 
